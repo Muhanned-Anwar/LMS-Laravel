@@ -601,10 +601,6 @@ class StudentAuthController extends Controller
             );
     
             return back()->with($notification);
-
-
-
-
         }
 
         
