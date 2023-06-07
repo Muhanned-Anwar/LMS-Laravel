@@ -17,6 +17,7 @@ class CreateShelfsTable extends Migration
             $table->id();
             $table->string('Shelf_ID')->unique();
             $table->string('Shelf_Location');
+            $table->timestamps();
         });
     }
 

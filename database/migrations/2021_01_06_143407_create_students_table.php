@@ -17,7 +17,7 @@ class CreateStudentsTable extends Migration
             $table->id();
             $table->string('Student_ID')->unique();
             $table->string('Name');
-            $table->string('Session');
+            $table->string('Session')->nullable();
             $table->string('Contact_no');
             $table->string('Email')->unique();
             $table->string('Image');
@@ -26,7 +26,7 @@ class CreateStudentsTable extends Migration
             $table->string('Verify');
             $table->string('Confirmation_Code');
             $table->string('Read');
-
+            $table->timestamps();
         });
     }
 

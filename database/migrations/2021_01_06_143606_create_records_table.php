@@ -22,6 +22,7 @@ class CreateRecordsTable extends Migration
             $table->string('Submission_Status');
             $table->string('Submission_Date');
             $table->string('Read');
+            $table->timestamps();
         });
     }
 

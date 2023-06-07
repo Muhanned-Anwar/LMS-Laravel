@@ -21,6 +21,7 @@ class CreateBooksTable extends Migration
             $table->string('Catagory');
             $table->string('Amounts');
             $table->string('Shelf_ID');
+            $table->timestamps();
         });
     }
 
