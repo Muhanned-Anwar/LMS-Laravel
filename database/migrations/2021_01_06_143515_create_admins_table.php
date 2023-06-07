@@ -18,6 +18,7 @@ class CreateAdminsTable extends Migration
             $table->string('Username')->unique();
             $table->string('Email')->unique();
             $table->string('Password');
+            $table->timestamps();
         });
     }
 
@@ -31,3 +32,4 @@ class CreateAdminsTable extends Migration
         Schema::dropIfExists('admins');
     }
 }
+

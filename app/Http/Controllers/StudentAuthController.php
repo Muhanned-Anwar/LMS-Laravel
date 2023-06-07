@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use \App\Mail\VerifyEmail;
-use \App\Mail\ForgetPassEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -18,7 +17,6 @@ class StudentAuthController extends Controller
 
         return view('student.sign_up_page');
 
-
     }
 
     public function sign_up_process(Request $req)
@@ -27,7 +25,7 @@ class StudentAuthController extends Controller
 
         $data['Name'] = $req->name;
         $data['Student_ID'] = $req->student_id;
-        $data['Session'] = $req->session;
+//        $data['Session'] = $req->session;
         $data['Contact_no'] = $req->contact;
         $data['Email'] = $req->email;
         $data['Username'] = $req->username;
@@ -36,48 +34,33 @@ class StudentAuthController extends Controller
         $data['Read'] = "No";
 
         $email_check = DB::table('students')->where('Email', $req->email)->count();
-
         $username_check = DB::table('students')->where('Username', $req->username)->count();
-
         $student_id_check = DB::table('students')->where('Student_ID', $req->student_id)->count();
 
         if ($student_id_check > 0) {
-
             $notification = array(
-                'message' => 'Student ID already registered !',
+                'message' => 'Student ID already registered!',
                 'alert-type' => 'error'
             );
-
             return back()->with($notification);
-
-
         }
         if ($username_check > 0) {
-
             $notification = array(
-                'message' => 'Username already exists !',
+                'message' => 'Username already exists!',
                 'alert-type' => 'error'
             );
-
             return back()->with($notification);
-
-
         }
         if ($email_check > 0) {
-
             $notification = array(
-                'message' => 'Email already registered !',
+                'message' => 'Email already registered!',
                 'alert-type' => 'error'
             );
-
             return back()->with($notification);
-
-
         }
 
         $email_code = rand(1000, 9999);
         $data['Confirmation_Code'] = $email_code;
-
         $data['Verify'] = "No";
 
         $image = $req->picture;
@@ -86,39 +69,30 @@ class StudentAuthController extends Controller
         $image_full_name = $image_name.'.'.$ext;
         $upload_path = 'public/image/'.$req->student_id.'/';
         $image_url = $upload_path.$image_full_name;
-        //file upload in project folder
         $upload = $image->move($upload_path, $image_full_name);
-        //file url upload in database
         $data['image'] = $image_url;
 
         if ($req->password != $req->confirm_password) {
-
             $notification = array(
-                'message' => 'Password do not match !',
+                'message' => 'Password do not match!',
                 'alert-type' => 'error'
             );
-
             return back()->with($notification);
-
-
         }
 
-        $register = DB::table('students')->Insert($data);
+        $register = Student::query()->insert($data);
 
         if ($register) {
-
             $id = DB::getPdo()->lastInsertId();
 
-            $details = [
+            $details = array(
                 'title' => 'Seminar Library Management System',
                 'body' => 'Your verification code - '.$email_code
-            ];
+            );
 
             Mail::to($req->email)->send(new \App\Mail\VerifyEmail($details));
 
             return Redirect::to('student/verify-email/'.$id);
-
-
         }
     }
 
